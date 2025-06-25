@@ -161,7 +161,12 @@ def create_pdf_report(summary_df, start_date, end_date, output_file):
 
     # Create table data
     table_data = [
-        ["Employee ID", "First Name", "Total Late Punch (mins)", "Total Early Punch (mins)"]
+        [
+            "Employee ID",
+            "First Name",
+            "Late Minutes",
+            "Early Minutes",
+        ]
     ]
 
     for _, row in summary_df.iterrows():
@@ -176,7 +181,7 @@ def create_pdf_report(summary_df, start_date, end_date, output_file):
 
     # Create table
     table = Table(
-        table_data, colWidths=[1.5 * inch, 2.5 * inch, 1.5 * inch, 1.5 * inch]
+        table_data, colWidths=[1.2 * inch, 2.8 * inch, 1.0 * inch, 1.0 * inch]
     )
 
     # Apply table style

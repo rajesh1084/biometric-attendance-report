@@ -81,8 +81,8 @@ The application generates:
    - Employee-wise summary table showing:
      - Employee ID
      - First Name
-     - Total Late Punch Minutes
-     - Total Early Punch Minutes
+     - Late Minutes
+     - Early Minutes
    - Summary statistics
    - Generation timestamp
 
