@@ -3,7 +3,7 @@
 Biometric Attendance Report Generator
 
 This script generates PDF reports from biometric attendance data for specified date ranges.
-It calculates late punches (after 9:15 AM) and early punches (before 4:15 PM) for each employee.
+It calculates late punch minutes (time after 9:15 AM) and early punch minutes (time before 4:15 PM) for each employee.
 
 Usage:
     python attendance_report.py <input_file> <start_date> <end_date>
@@ -39,20 +39,34 @@ def parse_time(time_str):
         return None
 
 
-def is_late_punch(clock_in_time):
-    """Check if clock in time is after 9:15 AM."""
+def calculate_late_minutes(clock_in_time):
+    """Calculate how many minutes late the clock in time is after 9:15 AM."""
     if clock_in_time is None:
-        return False
+        return 0
     late_threshold = time(9, 15)  # 9:15 AM
-    return clock_in_time > late_threshold
+    if clock_in_time > late_threshold:
+        # Convert both times to datetime for calculation
+        today = datetime.now().date()
+        clock_in_datetime = datetime.combine(today, clock_in_time)
+        threshold_datetime = datetime.combine(today, late_threshold)
+        difference = clock_in_datetime - threshold_datetime
+        return int(difference.total_seconds() / 60)  # Convert to minutes
+    return 0
 
 
-def is_early_punch(clock_out_time):
-    """Check if clock out time is before 4:15 PM."""
+def calculate_early_minutes(clock_out_time):
+    """Calculate how many minutes early the clock out time is before 4:15 PM."""
     if clock_out_time is None:
-        return False
+        return 0
     early_threshold = time(16, 15)  # 4:15 PM
-    return clock_out_time < early_threshold
+    if clock_out_time < early_threshold:
+        # Convert both times to datetime for calculation
+        today = datetime.now().date()
+        clock_out_datetime = datetime.combine(today, clock_out_time)
+        threshold_datetime = datetime.combine(today, early_threshold)
+        difference = threshold_datetime - clock_out_datetime
+        return int(difference.total_seconds() / 60)  # Convert to minutes
+    return 0
 
 
 def load_and_filter_data(file_path, start_date, end_date):
@@ -86,35 +100,33 @@ def load_and_filter_data(file_path, start_date, end_date):
 
 
 def calculate_attendance_summary(df):
-    """Calculate late and early punch counts for each employee."""
+    """Calculate late and early punch minutes for each employee."""
     summary_data = []
 
     # Group by Employee ID and First Name
     grouped = df.groupby(["Employee ID", "First Name"])
 
     for (emp_id, first_name), group in grouped:
-        late_punch_count = 0
-        early_punch_count = 0
+        total_late_minutes = 0
+        total_early_minutes = 0
 
         for _, row in group.iterrows():
             # Parse clock in and clock out times
             clock_in_time = parse_time(row["Clock In"])
             clock_out_time = parse_time(row["Clock Out"])
 
-            # Count late punches
-            if is_late_punch(clock_in_time):
-                late_punch_count += 1
+            # Calculate late minutes
+            total_late_minutes += calculate_late_minutes(clock_in_time)
 
-            # Count early punches
-            if is_early_punch(clock_out_time):
-                early_punch_count += 1
+            # Calculate early minutes
+            total_early_minutes += calculate_early_minutes(clock_out_time)
 
         summary_data.append(
             {
                 "Employee ID": emp_id,
                 "First Name": first_name,
-                "Total Late Punch": late_punch_count,
-                "Total Early Punch": early_punch_count,
+                "Total Late Punch": total_late_minutes,
+                "Total Early Punch": total_early_minutes,
             }
         )
 
@@ -149,7 +161,7 @@ def create_pdf_report(summary_df, start_date, end_date, output_file):
 
     # Create table data
     table_data = [
-        ["Employee ID", "First Name", "Total Late Punch", "Total Early Punch"]
+        ["Employee ID", "First Name", "Total Late Punch (mins)", "Total Early Punch (mins)"]
     ]
 
     for _, row in summary_df.iterrows():
@@ -195,16 +207,16 @@ def create_pdf_report(summary_df, start_date, end_date, output_file):
     story.append(Spacer(1, 12))
 
     total_employees = len(summary_df)
-    total_late_punches = summary_df["Total Late Punch"].sum()
-    total_early_punches = summary_df["Total Early Punch"].sum()
+    total_late_minutes = summary_df["Total Late Punch"].sum()
+    total_early_minutes = summary_df["Total Early Punch"].sum()
 
     summary_text = f"""
     Total Employees: {total_employees}<br/>
-    Total Late Punches: {total_late_punches}<br/>
-    Total Early Punches: {total_early_punches}<br/>
+    Total Late Minutes: {total_late_minutes}<br/>
+    Total Early Minutes: {total_early_minutes}<br/>
     <br/>
-    Note: Late punch is defined as any clock-in after 9:15 AM<br/>
-    Early punch is defined as any clock-out before 4:15 PM
+    Note: Late punch time is calculated as minutes after 9:15 AM<br/>
+    Early punch time is calculated as minutes before 4:15 PM
     """
 
     story.append(Paragraph(summary_text, styles["Normal"]))
@@ -275,8 +287,8 @@ Examples:
 
     print("\nReport Summary:")
     print(f"Total Employees: {len(summary_df)}")
-    print(f"Total Late Punches: {summary_df['Total Late Punch'].sum()}")
-    print(f"Total Early Punches: {summary_df['Total Early Punch'].sum()}")
+    print(f"Total Late Minutes: {summary_df['Total Late Punch'].sum()}")
+    print(f"Total Early Minutes: {summary_df['Total Early Punch'].sum()}")
 
 
 if __name__ == "__main__":

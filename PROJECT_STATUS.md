@@ -5,8 +5,8 @@
 ### Core Functionality
 - ✅ **CSV Data Processing**: Reads biometric attendance data from CSV files
 - ✅ **Date Range Filtering**: Filters data between any two given dates
-- ✅ **Late Punch Detection**: Identifies clock-ins after 9:15 AM
-- ✅ **Early Punch Detection**: Identifies clock-outs before 4:15 PM
+- ✅ **Late Punch Calculation**: Calculates minutes late after 9:15 AM for clock-ins
+- ✅ **Early Punch Calculation**: Calculates minutes early before 4:15 PM for clock-outs
 - ✅ **Data Validation**: Excludes days where both ClockIn and ClockOut are empty
 - ✅ **PDF Report Generation**: Creates professional PDF reports with summary statistics
 
@@ -18,8 +18,8 @@
 - ✅ **Help Documentation**: Comprehensive help text with examples
 
 ### Report Features
-- ✅ **Employee Summary**: Shows Employee ID, First Name, Total Late Punch, Total Early Punch
-- ✅ **Summary Statistics**: Total employees, total late punches, total early punches
+- ✅ **Employee Summary**: Shows Employee ID, First Name, Total Late Punch Minutes, Total Early Punch Minutes
+- ✅ **Summary Statistics**: Total employees, total late minutes, total early minutes
 - ✅ **Professional Layout**: Well-formatted PDF with tables and styling
 - ✅ **Generation Timestamp**: Includes report generation date and time
 - ✅ **File Naming**: Descriptive filename with date range
@@ -36,9 +36,9 @@
 ## 🧪 Testing Results
 
 ### Test Cases Passed:
-1. ✅ **January 2025 Report**: 80 employees, 410 late punches, 252 early punches
-2. ✅ **June 2025 Report**: 86 employees, 201 late punches, 117 early punches
-3. ✅ **Weekly Report**: 77 employees, 54 late punches, 20 early punches
+1. ✅ **January 2025 Report**: 80 employees, 10,346 late minutes, 12,073 early minutes
+2. ✅ **June 2025 Report**: 86 employees, 201 late minutes, 117 early minutes  
+3. ✅ **Weekly Report**: 77 employees, 2,516 late minutes, 755 early minutes
 4. ✅ **Error Handling**: Proper error message for invalid date ranges
 5. ✅ **File Validation**: Proper error message for missing files
 6. ✅ **PDF Generation**: All reports generated successfully
@@ -72,21 +72,21 @@ The project is ready to be pushed to GitHub at: `https://github.com/rajesh1084/b
    ```
 
 ## 📊 Business Logic Implemented
-- **Late Punch**: Any clock-in after 9:15 AM
-- **Early Punch**: Any clock-out before 4:15 PM
+- **Late Punch**: Calculates minutes late after 9:15 AM for each clock-in
+- **Early Punch**: Calculates minutes early before 4:15 PM for each clock-out
 - **Data Exclusion**: Days with both empty clock-in and clock-out are excluded
 - **Date Range**: Only processes data within specified date range
 - **Employee Grouping**: Groups data by Employee ID and First Name
-- **Count Aggregation**: Counts late and early punches per employee
+- **Time Aggregation**: Sums late and early minutes per employee
 
 ## 🎯 All Requirements Met
 ✅ Python Pandas program  
 ✅ PDF format reports  
 ✅ Date range filtering  
-✅ Required columns: Employee ID, First Name, Total Late Punch, Total Early Punch  
+✅ Required columns: Employee ID, First Name, Total Late Punch (minutes), Total Early Punch (minutes)  
 ✅ Exclude empty ClockIn/ClockOut days  
-✅ Late punch definition: after 9:15 AM  
-✅ Early punch definition: before 4:15 PM  
+✅ Late punch calculation: minutes after 9:15 AM  
+✅ Early punch calculation: minutes before 4:15 PM  
 ✅ Command line input  
 ✅ Report created in current directory  
 ✅ Ready for GitHub repository

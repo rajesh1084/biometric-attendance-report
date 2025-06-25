@@ -1,12 +1,12 @@
 # Biometric Attendance Report Generator
 
-A Python application that generates PDF reports from biometric attendance data, analyzing late and early punch patterns for employees within a specified date range.
+A Python application that generates PDF reports from biometric attendance data, calculating late and early punch time in minutes for employees within a specified date range.
 
 ## Features
 
 - **Date Range Filtering**: Generate reports for any specified date range
-- **Late Punch Detection**: Identifies clock-ins after 9:15 AM
-- **Early Punch Detection**: Identifies clock-outs before 4:15 PM
+- **Late Punch Calculation**: Calculates minutes late after 9:15 AM for clock-ins
+- **Early Punch Calculation**: Calculates minutes early before 4:15 PM for clock-outs
 - **PDF Report Generation**: Creates professional PDF reports with summary statistics
 - **Data Validation**: Excludes invalid entries where both clock-in and clock-out are empty
 - **Command Line Interface**: Easy to use CLI with proper argument validation
@@ -81,23 +81,23 @@ The application generates:
    - Employee-wise summary table showing:
      - Employee ID
      - First Name
-     - Total Late Punches
-     - Total Early Punches
+     - Total Late Punch Minutes
+     - Total Early Punch Minutes
    - Summary statistics
    - Generation timestamp
 
 2. **Console Output**: Summary information including:
    - Number of records processed
    - Number of employees
-   - Total late and early punches
+   - Total late and early minutes
 
 ### Sample Output File
 The output file will be named: `attendance_report_YYYY-MM-DD_to_YYYY-MM-DD.pdf`
 
 ## Business Rules
 
-- **Late Punch**: Any clock-in time after 9:15 AM
-- **Early Punch**: Any clock-out time before 4:15 PM
+- **Late Punch**: Minutes late after 9:15 AM for each clock-in
+- **Early Punch**: Minutes early before 4:15 PM for each clock-out
 - **Data Exclusion**: Days where both Clock In and Clock Out are empty are excluded from analysis
 - **Date Range**: Only records within the specified date range are processed
 
